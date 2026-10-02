@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Plantillas Back Office</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#fff1f2',
+                            100: '#ffe4e6',
+                            500: '#f43f5e',
+                            600: '#e11d48',
+                            700: '#be123c',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom scrollbar and animations */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 h-full flex flex-col font-sans antialiased selection:bg-brand-500 selection:text-white">
+
+    <!-- Header -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-xs">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-rose-600 to-red-500 flex items-center justify-center text-white shadow-md shadow-rose-500/20">
+                    <i class="fa-solid fa-layer-group text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold text-slate-900 leading-tight">Plantillas Back Office</h1>
+                    <p class="text-xs text-slate-500 font-medium">Gestión y Generación Rápida de Formatos</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-2">
+                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                    <span class="w-1.5 h-1.5 mr-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Sistema Activo
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col lg:flex-row gap-8">
+        
+        <!-- Left Column: Process Selector & Dynamic Form -->
+        <div class="flex-1 flex flex-col space-y-6">
+            
+            <!-- Process Selector Buttons -->
+            <section class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs">
+                <h2 class="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-3">Seleccione el Proceso a Seguir</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5" id="process-buttons">
+                    <!-- Buttons injected via JS -->
+                </div>
+            </section>
+
+            <!-- Dynamic Form Section -->
+            <section class="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200/80 shadow-xs flex-1 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between pb-4 mb-6 border-b border-slate-100">
+                        <div>
+                            <span id="form-category-badge" class="text-xs font-semibold px-2.5 py-1 rounded-md bg-rose-50 text-rose-600 uppercase tracking-wide">Desbloqueo</span>
+                            <h2 id="form-title" class="text-xl font-bold text-slate-900 mt-1">Desbloqueo de Equipo Televisor</h2>
+                        </div>
+                        <button onclick="resetCurrentForm()" class="text-xs font-medium text-slate-400 hover:text-slate-600 transition-colors flex items-center gap-1 bg-slate-50 hover:bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200">
+                            <i class="fa-solid fa-rotate-right"></i> Limpiar Campos
+                        </button>
+                    </div>
+
+                    <!-- Important Notice Banner (if applicable) -->
+                    <div id="notice-banner" class="hidden mb-6 p-4 rounded-xl bg-amber-50 border border-amber-200/80 text-amber-900 text-sm flex items-start gap-3 shadow-2xs">
+                        <i class="fa-solid fa-triangle-exclamation text-amber-600 mt-0.5 text-base shrink-0"></i>
+                        <div class="leading-relaxed">
+                            <strong class="font-semibold block mb-0.5 text-amber-950">Nota Importante:</strong>
+                            <span id="notice-text"></span>
+                        </div>
+                    </div>
+
+                    <!-- Dynamic Form Fields Container -->
+                    <form id="dynamic-form" class="space-y-4">
+                        <!-- Fields injected via JS -->
+                    </form>
+                </div>
+
+                <!-- Form Footer action -->
+                <div class="mt-8 pt-4 border-t border-slate-100 flex items-center justify-end">
+                    <button type="button" onclick="copyAllInfo()" class="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-medium text-sm transition-all shadow-md shadow-slate-900/10 active:scale-95 gap-2 cursor-pointer">
+                        <i class="fa-regular fa-copy"></i> Copiar Toda la Información
+                    </button>
+                </div>
+            </section>
+        </div>
+
+        <!-- Right Column: Live Output Preview -->
+        <div class="w-full lg:w-[420px] flex flex-col">
+            <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs sticky top-24 flex flex-col h-[calc(100vh-8rem)] max-h-[750px]">
+                <div class="flex items-center justify-between pb-4 border-b border-slate-100 mb-4">
+                    <div class="flex items-center space-x-2">
+                        <i class="fa-solid fa-code text-rose-600"></i>
+                        <h3 class="font-bold text-slate-900 text-sm">Vista Previa Generada</h3>
+                    </div>
+                    <span class="text-xs text-slate-400 font-mono">Texto listo para pegar</span>
+                </div>
+
+                <!-- Textarea / Preview Box -->
+                <div class="flex-1 relative flex flex-col">
+                    <textarea id="preview-output" readonly class="w-full flex-1 p-4 bg-slate-50 border border-slate-200 rounded-xl font-mono text-xs text-slate-700 resize-none focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all shadow-inner"></textarea>
+                </div>
+
+                <!-- Quick Copy Button at Bottom -->
+                <div class="mt-4 pt-4 border-t border-slate-100 flex flex-col gap-2">
+                    <button onclick="copyAllInfo()" class="w-full py-3 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-semibold text-sm transition-all shadow-md shadow-rose-600/20 active:scale-95 flex items-center justify-center gap-2 cursor-pointer">
+                        <i class="fa-solid fa-clipboard text-base"></i> Copiar Información al Portapapeles
+                    </button>
+                    <p class="text-center text-[11px] text-slate-400">Los datos se actualizan en tiempo real al escribir.</p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-6 right-6 transform translate-y-20 opacity-0 transition-all duration-300 z-50 flex items-center gap-3 bg-slate-900 text-white px-5 py-3.5 rounded-xl shadow-xl border border-slate-700">
+        <div class="w-7 h-7 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
+            <i class="fa-solid fa-check text-sm"></i>
+        </div>
+        <div>
+            <h4 class="text-xs font-semibold text-white">¡Copiado con éxito!</h4>
+            <p class="text-xs text-slate-300">La plantilla está lista para pegar en F7 o Genesys.</p>
+        </div>
+    </div>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // Database of Templates based on 'Plantillas Back nueva.docx'
+        const templates = [
+            {
+                id: 'desbloqueo',
+                name: 'Desbloqueo de Equipo Televisor',
+                category: 'Televisor',
+                icon: 'fa-tv',
+                notice: '',
+                fields: [
+                    { id: 'cuenta', label: 'Cuenta', type: 'text', placeholder: 'Ej. 10928374' },
+                    { id: 'nombre_cliente', label: 'Nombre de cliente', type: 'text', placeholder: 'Ej. Juan Pérez Gómez' },
+                    { id: 'cedula', label: 'Cédula', type: 'text', placeholder: 'Ej. 1020304050' },
+                    { id: 'imei', label: 'IMEI', type: 'text', placeholder: 'Ej. 864521038472910' },
+                    { id: 'credito', label: 'Crédito', type: 'text', placeholder: 'Ej. CR-98321' },
+                    { id: 'fecha_ultimo_pago', label: 'Fecha de último pago', type: 'date', placeholder: '' },
+                    { id: 'saldo', label: 'Saldo debe estar en $0', type: 'select', options: ['Sí ($0)', 'No'], placeholder: '' }
+                ],
+                formatter: (data) => {
+                    return `PLANTILLAS DE GESTIÓN\nDesbloqueo de Equipo Televisor\nCuenta: ${data.cuenta || ''}\nNombre de cliente: ${data.nombre_cliente || ''}\nCédula: ${data.cedula || ''}\nIMEI: ${data.imei || ''}\nCrédito: ${data.credito || ''}\nFecha de último pago: ${data.fecha_ultimo_pago || ''}\nSaldo debe estar en $0: ${data.saldo || ''}`;
+                }
+            },
+            {
+                id: 'normalizacion_tarifa',
+                name: 'Normalización de Tarifa Especial',
+                category: 'Tarifas',
+                icon: 'fa-tags',
+                notice: 'IMPORTANTE: Aplicar tarifa de la misma tecnología actual del cliente. Si es por migración, solicitar normalización de tarifa HFC y luego realizar la migración. Se deja notas en F7 y se escala por Genesys de BackOffice.',
+                fields: [
+                    { id: 'cuenta', label: 'Cuenta', type: 'text', placeholder: 'Ej. 38472910' },
+                    { id: 'orden_trabajo', label: 'Orden de trabajo donde se aplicó tarifa especial', type: 'text', placeholder: 'Ej. OT-548923' },
+                    { id: 'codigo_tarifa', label: 'Código de tarifa', type: 'text', placeholder: 'Ej. TAR-HFC-09' },
+                    { id: 'tecnologia', label: 'Tecnología (HFC o FTTH)', type: 'select', options: ['HFC', 'FTTH'], placeholder: '' },
+                    { id: 'asesor', label: 'Asesor que aplicó tarifa', type: 'text', placeholder: 'Ej. Carlos Martínez' },
+                    { id: 'tarifa_actual', label: 'Cambiar tarifa actual', type: 'text', placeholder: 'Ej. Tarifa Básica 200M' },
+                    { id: 'tarifa_nueva', label: 'Por tarifa nueva comercial', type: 'text', placeholder: 'Ej. Tarifa Promo 500M' },
+                    { id: 'valor_final', label: 'Valor mensual final', type: 'text', placeholder: 'Ej. $79.900' }
+                ],
+                formatter: (data) => {
+                    return `PLANTILLAS DE GESTIÓN\nNormalización de Tarifa Especial\nCuenta: ${data.cuenta || ''}\nOrden de trabajo donde se aplicó tarifa especial: ${data.orden_trabajo || ''}\nCódigo de tarifa: ${data.codigo_tarifa || ''}\nTecnología (HFC o FTTH): ${data.tecnologia || ''}\nAsesor que aplicó tarifa: ${data.asesor || ''}\nSe requiere cambio de tarifa ${data.tarifa_actual || '_____'} por tarifa nueva comercial ${data.tarifa_nueva || '_____'}.\nValor mensual final: ${data.valor_final || ''}\n\nIMPORTANTE: Aplicar tarifa de la misma tecnología actual del cliente. Si es por migración, solicitar normalización de tarifa HFC y luego realizar la migración. Se deja notas en F7 y se escala por Genesys de BackOffice.`;
+                }
+            },
+            {
+                id: 'claro_drive',
+                name: 'Claro Drive',
+                category: 'Aplicaciones',
+                icon: 'fa-cloud',
+                notice: 'IMPORTANTE: Dejar en notas F7 o Tickler y escalar por Genesys de BackOffice. No omitir información.',
+                fields: [
+                    { id: 'cuenta', label: 'Cuenta', type: 'text', placeholder: 'Ej. 92837465' },
+                    { id: 'numero_contacto', label: 'Número de contacto', type: 'tel', placeholder: 'Ej. 3101234567' },
+                    { id: 'mensaje_error', label: 'Mensaje de error', type: 'text', placeholder: 'Ej. Error de autenticación 500' },
+                    { id: 'correo', label: 'Correo electrónico', type: 'email', placeholder: 'Ej. cliente@gmail.com' },
+                    { id: 'tipo_suscripcion', label: 'Tipo de suscripción (Paga o Bundle)', type: 'select', options: ['Paga', 'Bundle'], placeholder: '' },
+                    { id: 'fecha_hora_falla', label: 'Fecha y hora de falla', type: 'datetime-local', placeholder: '' },
+                    { id: 'dispositivo', label: 'Dispositivo utilizado', type: 'text', placeholder: 'Ej. Smartphone / PC' },
+                    { id: 'marca_modelo', label: 'Marca o modelo de equipo', type: 'text', placeholder: 'Ej. Samsung Galaxy S23' },
+                    { id: 'sistema_operativo', label: 'Sistema operativo', type: 'text', placeholder: 'Ej. Android 14 / Windows 11' },
+                    { id: 'version_app', label: 'Versión del App', type: 'text', placeholder: 'Ej. v12.4.1' },
+                    { id: 'acceso_red', label: 'Tipo de acceso a la red (WiFi o LAN)', type: 'select', options: ['WiFi', 'LAN'], placeholder: '' },
+                    { id: 'navegador', label: 'Navegador', type: 'text', placeholder: 'Ej. Google Chrome v120' },
+                    { id: 'utiliza_proxy', label: '¿Utiliza Proxy?', type: 'select', options: ['No', 'Sí'], placeholder: '' }
+                ],
+                formatter: (data) => {
+                    return `PLANTILLAS DE GESTIÓN\nClaro Drive\nCuenta: ${data.cuenta || ''}\nNúmero de contacto: ${data.numero_contacto || ''}\nMensaje de error: ${data.mensaje_error || ''}\nCorreo electrónico: ${data.correo || ''}\nTipo de suscripción (Paga o Bundle): ${data.tipo_suscripcion || ''}\nFecha y hora de falla: ${data.fecha_hora_falla || ''}\nDispositivo utilizado: ${data.dispositivo || ''}\nMarca o modelo de equipo: ${data.marca_modelo || ''}\nSistema operativo: ${data.sistema_operativo || ''}\nVersión del App: ${data.version_app || ''}\nTipo de acceso a la red (WiFi o LAN): ${data.acceso_red || ''}\nNavegador: ${data.navegador || ''}\n¿Utiliza Proxy?: ${data.utiliza_proxy || ''}\n\nIMPORTANTE: Dejar en notas F7 o Tickler y escalar por Genesys de BackOffice. No omitir información.`;
+                }
+            },
+            {
+                id: 'escucha_llamada',
+                name: 'Escucha de Llamada',
+                category: 'Calidad',
+                icon: 'fa-headphones',
+                notice: 'IMPORTANTE: Dejar en notas F7 y escalar por Genesys BackOffice solicitando código de autorización. No aplica para ventas nuevas, Tener presente que solo aplica la ultima marcación CAN-1RE o CAN-2RE.',
+                fields: [
+                    { id: 'cuenta_min', label: 'Cuenta/MIN', type: 'text', placeholder: 'Ej. 3159876543' },
+                    { id: 'gestion', label: 'Gestión (Ventas o Retención)', type: 'select', options: ['Ventas', 'Retención'], placeholder: '' },
+                    { id: 'ot_fecha', label: 'OT y fecha', type: 'text', placeholder: 'Ej. OT-88321 02/10/2026' },
+                    { id: 'asesor', label: 'Asesor', type: 'text', placeholder: 'Ej. Ana María Rojas' },
+                    { id: 'servicios_informados', label: 'Servicios informados al cliente', type: 'text', placeholder: 'Ej. Dúo Internet + TV' },
+                    { id: 'valor_informado', label: 'Valor informado al cliente', type: 'text', placeholder: 'Ej. $110.000' },
+                    { id: 'observaciones', label: 'Observaciones', type: 'textarea', placeholder: 'Detalles de la escucha y justificación...' }
+                ],
+                formatter: (data) => {
+                    return `PLANTILLAS DE GESTIÓN\nEscucha de Llamada\nCuenta/MIN: ${data.cuenta_min || ''}\nGestión (Ventas o Retención): ${data.gestion || ''}\nOT y fecha: ${data.ot_fecha || ''}\nAsesor: ${data.asesor || ''}\nServicios informados al cliente: ${data.servicios_informados || ''}\nValor informado al cliente: ${data.valor_informado || ''}\nObservaciones: ${data.observaciones || ''}\n\nIMPORTANTE: Dejar en notas F7 y escalar por Genesys BackOffice solicitando código de autorización. No aplica para ventas nuevas, Tener presente que solo aplica la ultima marcación CAN-1RE o CAN-2RE.`;
+                }
+            },
+            {
+                id: 'suspension_hogar',
+                name: 'Suspensión Desastre Natural (Hogar)',
+                category: 'Desastre Natural',
+                icon: 'fa-house-chimney',
+                notice: 'Departamentos donde aplica: Antioquia, Caldas, Cauca, Chocó, Quindío, Cundinamarca, Risaralda, Huila, Valle del Cauca, Tolima, Putumayo, Norte de Santander, Bolívar, Nariño y Sucre.\nHOGAR: Marcación CAN-CGN Código 2 meses. Suspensión temporal Resolución 8332 de 2026 Desastre Natural',
+                fields: [
+                    { id: 'cuenta', label: 'Cuenta', type: 'text', placeholder: 'Ej. 77382910' },
+                    { id: 'tiempo_suspension', label: 'Tiempo de la suspensión', type: 'text', placeholder: 'Ej. 2 Meses' },
+                    { id: 'fecha_inicio_fin', label: 'Fecha de inicio y fin', type: 'text', placeholder: 'Ej. 01/10/2026 al 01/12/2026' },
+                    { id: 'servicios_suspender', label: 'Servicios a suspender', type: 'text', placeholder: 'Ej. Internet, Televisión, Telefonía' },
+                    { id: 'cliente_acepta', label: 'Cliente acepta que es una suspensión temporal', type: 'select', options: ['Sí', 'No'], placeholder: '' }
+                ],
+                formatter: (data) => {
+                    return `PLANTILLAS DE GESTIÓN\nSuspensión Temporal por Desastre Natural (HOGAR)\nDepartamentos donde aplica: Antioquia, Caldas, Cauca, Chocó, Quindío, Cundinamarca, Risaralda, Huila, Valle del Cauca, Tolima, Putumayo, Norte de Santander, Bolívar, Nariño y Sucre.\nMarcación CAN-CGN Código 2 meses\nSuspensión temporal Resolución 8332 de 2026 Desastre Natural\nCuenta: ${data.cuenta || ''}\nTiempo de la suspensión: ${data.tiempo_suspension || ''}\nFecha de inicio y fin: ${data.fecha_inicio_fin || ''}\nServicios a suspender: ${data.servicios_suspender || ''}\nCliente acepta que es una suspensión temporal: ${data.cliente_acepta || ''}`;
+                }
+            },
+            {
+                id: 'suspension_movil',
+                name: 'Suspensión Desastre Natural (Móvil)',
+                category: 'Desastre Natural',
+                icon: 'fa-mobile-screen',
+                notice: 'Departamentos donde aplica: Antioquia, Caldas, Cauca, Chocó, Quindío, Cundinamarca, Risaralda, Huila, Valle del Cauca, Tolima, Putumayo, Norte de Santander, Bolívar, Nariño y Sucre.\nMÓVIL: Tickler DESNSUSP (en coordenada colocar cantidad de meses, tickler abierto). Suspensión temporal Resolución 8332 de 2026 Desastre Natural',
+                fields: [
+                    { id: 'min_movil', label: 'MIN / Número Móvil', type: 'text', placeholder: 'Ej. 3209876543' },
+                    { id: 'fecha_inicio', label: 'Fecha de inicio', type: 'date', placeholder: '' },
+                    { id: 'fecha_finalizacion', label: 'Fecha de finalización', type: 'date', placeholder: '' },
+                    { id: 'numero_contacto_adicional', label: 'Número de contacto adicional', type: 'tel', placeholder: 'Ej. 3112223344' },
+                    { id: 'cliente_acepta', label: 'Cliente acepta que es una suspensión temporal', type: 'select', options: ['Sí', 'No'], placeholder: '' }
+                ],
+                formatter: (data) => {
+                    return `PLANTILLAS DE GESTIÓN\nSuspensión Temporal por Desastre Natural (MÓVIL)\nDepartamentos donde aplica: Antioquia, Caldas, Cauca, Chocó, Quindío, Cundinamarca, Risaralda, Huila, Valle del Cauca, Tolima, Putumayo, Norte de Santander, Bolívar, Nariño y Sucre.\nTickler DESNSUSP (en coordenada colocar cantidad de meses, tickler abierto)\nSuspensión temporal Resolución 8332 de 2026 Desastre Natural\nMIN / Número Móvil: ${data.min_movil || ''}\nFecha de inicio: ${data.fecha_inicio || ''}\nFecha de finalización: ${data.fecha_finalizacion || ''}\nNúmero de contacto adicional: ${data.numero_contacto_adicional || ''}\nCliente acepta que es una suspensión temporal: ${data.cliente_acepta || ''}`;
+                }
+            }
+        ];
+
+        let currentTemplateId = templates[0].id;
+        let formData = {};
+
+        // Initialize application
+        document.addEventListener('DOMContentLoaded', () => {
+            renderProcessButtons();
+            loadTemplate(currentTemplateId);
+        });
+
+        // Render selector buttons
+        function renderProcessButtons() {
+            const container = document.getElementById('process-buttons');
+            container.innerHTML = '';
+
+            templates.forEach(t => {
+                const isActive = t.id === currentTemplateId;
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.onclick = () => loadTemplate(t.id);
+                btn.className = `flex items-center gap-3 p-3 rounded-xl border text-left transition-all cursor-pointer ${
+                    isActive 
+                        ? 'bg-rose-50 border-rose-500/50 text-rose-900 shadow-xs ring-1 ring-rose-500/20' 
+                        : 'bg-white border-slate-200 hover:border-slate-300 text-slate-700 hover:bg-slate-50/50'
+                }`;
+                
+                btn.innerHTML = `
+                    <div class="w-9 h-9 rounded-lg ${isActive ? 'bg-rose-600 text-white' : 'bg-slate-100 text-slate-600'} flex items-center justify-center shrink-0 transition-colors">
+                        <i class="fa-solid ${t.icon} text-sm"></i>
+                    </div>
+                    <div class="overflow-hidden">
+                        <span class="text-[10px] uppercase tracking-wider font-semibold ${isActive ? 'text-rose-600' : 'text-slate-400'} block">${t.category}</span>
+                        <h4 class="text-xs font-bold truncate leading-tight">${t.name}</h4>
+                    </div>
+                `;
+                container.appendChild(btn);
+            });
+        }
+
+        // Load specific template form
+        function loadTemplate(id) {
+            currentTemplateId = id;
+            formData = {};
+            renderProcessButtons();
+
+            const template = templates.find(t => t.id === id);
+            
+            // Set header info
+            document.getElementById('form-category-badge').innerText = template.category;
+            document.getElementById('form-title').innerText = template.name;
+
+            // Handle Notice Banner
+            const banner = document.getElementById('notice-banner');
+            const noticeText = document.getElementById('notice-text');
+            if (template.notice) {
+                noticeText.innerText = template.notice;
+                banner.classList.remove('hidden');
+            } else {
+                banner.classList.add('hidden');
+            }
+
+            // Build form fields
+            const formContainer = document.getElementById('dynamic-form');
+            formContainer.innerHTML = '';
+            formContainer.className = "space-y-4 fade-in";
+
+            template.fields.forEach(field => {
+                const wrapper = document.createElement('div');
+                wrapper.className = "flex flex-col gap-1.5";
+
+                const label = document.createElement('label');
+                label.htmlFor = field.id;
+                label.className = "text-xs font-semibold text-slate-700 flex items-center justify-between";
+                label.innerHTML = `<span>${field.label}</span>`;
+                wrapper.appendChild(label);
+
+                let inputElement;
+                if (field.type === 'select') {
+                    inputElement = document.createElement('select');
+                    inputElement.className = "w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all";
+                    
+                    const defaultOpt = document.createElement('option');
+                    defaultOpt.value = "";
+                    defaultOpt.textContent = "Seleccione una opción...";
+                    defaultOpt.disabled = true;
+                    defaultOpt.selected = true;
+                    inputElement.appendChild(defaultOpt);
+
+                    field.options.forEach(opt => {
+                        const optEl = document.createElement('option');
+                        optEl.value = opt;
+                        optEl.textContent = opt;
+                        inputElement.appendChild(optEl);
+                    });
+                } else if (field.type === 'textarea') {
+                    inputElement = document.createElement('textarea');
+                    inputElement.rows = 3;
+                    inputElement.placeholder = field.placeholder;
+                    inputElement.className = "w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all resize-none";
+                } else {
+                    inputElement = document.createElement('input');
+                    inputElement.type = field.type;
+                    inputElement.placeholder = field.placeholder;
+                    inputElement.className = "w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all";
+                }
+
+                inputElement.id = field.id;
+                inputElement.name = field.id;
+                inputElement.oninput = (e) => updateFormData(field.id, e.target.value);
+                inputElement.onchange = (e) => updateFormData(field.id, e.target.value);
+
+                wrapper.appendChild(inputElement);
+                formContainer.appendChild(wrapper);
+            });
+
+            updatePreview();
+        }
+
+        // Update form data state
+        function updateFormData(fieldId, value) {
+            formData[fieldId] = value;
+            updatePreview();
+        }
+
+        // Reset current form
+        function resetCurrentForm() {
+            formData = {};
+            loadTemplate(currentTemplateId);
+        }
+
+        // Update live preview output
+        function updatePreview() {
+            const template = templates.find(t => t.id === currentTemplateId);
+            const outputTextarea = document.getElementById('preview-output');
+            outputTextarea.value = template.formatter(formData);
+        }
+
+        // Copy all information to clipboard
+        function copyAllInfo() {
+            const outputTextarea = document.getElementById('preview-output');
+            outputTextarea.select();
+            outputTextarea.setSelectionRange(0, 99999); // For mobile devices
+
+            try {
+                // Use fallback document.execCommand as recommended for iFrame safety
+                const success = document.execCommand('copy');
+                if (success || navigator.clipboard) {
+                    if (navigator.clipboard) {
+                        navigator.clipboard.writeText(outputTextarea.value);
+                    }
+                    showToast();
+                } else {
+                    throw new Error('Copy failed');
+                }
+            } catch (err) {
+                console.error('Error copying text: ', err);
+                // Fallback attempt
+                alert('No se pudo copiar automáticamente. Por favor seleccione el texto de la vista previa y cópiel manualmente.');
+            }
+        }
+
+        // Toast Notification Trigger
+        function showToast() {
+            const toast = document.getElementById('toast');
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
