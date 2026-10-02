@@ -207,7 +207,7 @@
                     { id: 'valor_final', label: 'Valor mensual final', type: 'text', placeholder: 'Ej. $79.900' }
                 ],
                 formatter: (data) => {
-                    return `PLANTILLAS DE GESTIÓN\nNormalización de Tarifa Especial\nCuenta: ${data.cuenta || ''}\nOrden de trabajo donde se aplicó tarifa especial: ${data.orden_trabajo || ''}\nCódigo de tarifa: ${data.codigo_tarifa || ''}\nTecnología (HFC o FTTH): ${data.tecnologia || ''}\nAsesor que aplicó tarifa: ${data.asesor || ''}\nSe requiere cambio de tarifa ${data.tarifa_actual || '_____'} por tarifa nueva comercial ${data.tarifa_nueva || '_____'}.\nValor mensual final: ${data.valor_final || ''}\n\nIMPORTANTE: Aplicar tarifa de la misma tecnología actual del cliente. Si es por migración, solicitar normalización de tarifa HFC y luego realizar la migración. Se deja notas en F7 y se escala por Genesys de BackOffice.`;
+                    return `PLANTILLAS DE GESTIÓN\nNormalización de Tarifa Especial\nCuenta: ${data.cuenta || ''}\nOrden de trabajo donde se aplicó tarifa especial: ${data.orden_trabajo || ''}\nCódigo de tarifa: ${data.codigo_tarifa || ''}\nTecnología (HFC o FTTH): ${data.tecnologia || ''}\nAsesor que aplicó tarifa: ${data.asesor || ''}\nSe requiere cambio de tarifa ${data.tarifa_actual || '_____'} por tarifa nueva comercial ${data.tarifa_nueva || '_____'}.\nValor mensual final: ${data.valor_final || ''}`;
                 }
             },
             {
@@ -232,7 +232,7 @@
                     { id: 'utiliza_proxy', label: '¿Utiliza Proxy?', type: 'select', options: ['No', 'Sí'], placeholder: '' }
                 ],
                 formatter: (data) => {
-                    return `PLANTILLAS DE GESTIÓN\nClaro Drive\nCuenta: ${data.cuenta || ''}\nNúmero de contacto: ${data.numero_contacto || ''}\nMensaje de error: ${data.mensaje_error || ''}\nCorreo electrónico: ${data.correo || ''}\nTipo de suscripción (Paga o Bundle): ${data.tipo_suscripcion || ''}\nFecha y hora de falla: ${data.fecha_hora_falla || ''}\nDispositivo utilizado: ${data.dispositivo || ''}\nMarca o modelo de equipo: ${data.marca_modelo || ''}\nSistema operativo: ${data.sistema_operativo || ''}\nVersión del App: ${data.version_app || ''}\nTipo de acceso a la red (WiFi o LAN): ${data.acceso_red || ''}\nNavegador: ${data.navegador || ''}\n¿Utiliza Proxy?: ${data.utiliza_proxy || ''}\n\nIMPORTANTE: Dejar en notas F7 o Tickler y escalar por Genesys de BackOffice. No omitir información.`;
+                    return `PLANTILLAS DE GESTIÓN\nClaro Drive\nCuenta: ${data.cuenta || ''}\nNúmero de contacto: ${data.numero_contacto || ''}\nMensaje de error: ${data.mensaje_error || ''}\nCorreo electrónico: ${data.correo || ''}\nTipo de suscripción (Paga o Bundle): ${data.tipo_suscripcion || ''}\nFecha y hora de falla: ${data.fecha_hora_falla || ''}\nDispositivo utilizado: ${data.dispositivo || ''}\nMarca o modelo de equipo: ${data.marca_modelo || ''}\nSistema operativo: ${data.sistema_operativo || ''}\nVersión del App: ${data.version_app || ''}\nTipo de acceso a la red (WiFi o LAN): ${data.acceso_red || ''}\nNavegador: ${data.navegador || ''}\n¿Utiliza Proxy?: ${data.utiliza_proxy || ''}`;
                 }
             },
             {
@@ -251,7 +251,7 @@
                     { id: 'observaciones', label: 'Observaciones', type: 'textarea', placeholder: 'Detalles de la escucha y justificación...' }
                 ],
                 formatter: (data) => {
-                    return `PLANTILLAS DE GESTIÓN\nEscucha de Llamada\nCuenta/MIN: ${data.cuenta_min || ''}\nGestión (Ventas o Retención): ${data.gestion || ''}\nOT y fecha: ${data.ot_fecha || ''}\nAsesor: ${data.asesor || ''}\nServicios informados al cliente: ${data.servicios_informados || ''}\nValor informado al cliente: ${data.valor_informado || ''}\nObservaciones: ${data.observaciones || ''}\n\nIMPORTANTE: Dejar en notas F7 y escalar por Genesys BackOffice solicitando código de autorización. No aplica para ventas nuevas, Tener presente que solo aplica la ultima marcación CAN-1RE o CAN-2RE.`;
+                    return `PLANTILLAS DE GESTIÓN\nEscucha de Llamada\nCuenta/MIN: ${data.cuenta_min || ''}\nGestión (Ventas o Retención): ${data.gestion || ''}\nOT y fecha: ${data.ot_fecha || ''}\nAsesor: ${data.asesor || ''}\nServicios informados al cliente: ${data.servicios_informados || ''}\nValor informado al cliente: ${data.valor_informado || ''}\nObservaciones: ${data.observaciones || ''}`;
                 }
             },
             {
