@@ -263,12 +263,13 @@
                 fields: [
                     { id: 'cuenta', label: 'Cuenta', type: 'text', placeholder: 'Ej. 77382910' },
                     { id: 'tiempo_suspension', label: 'Tiempo de la suspensión', type: 'text', placeholder: 'Ej. 2 Meses' },
-                    { id: 'fecha_inicio_fin', label: 'Fecha de inicio y fin', type: 'text', placeholder: 'Ej. 01/10/2026 al 01/12/2026' },
+                    { id: 'fecha_inicio', label: 'Fecha de inicio', type: 'date', placeholder: '' },
+                    { id: 'fecha_finalizacion', label: 'Fecha de finalización', type: 'date', placeholder: '' },
                     { id: 'servicios_suspender', label: 'Servicios a suspender', type: 'text', placeholder: 'Ej. Internet, Televisión, Telefonía' },
                     { id: 'cliente_acepta', label: 'Cliente acepta que es una suspensión temporal', type: 'select', options: ['Sí', 'No'], placeholder: '' }
                 ],
                 formatter: (data) => {
-                    return `PLANTILLAS DE GESTIÓN\nSuspensión Temporal por Desastre Natural (HOGAR)\nDepartamentos donde aplica: Antioquia, Caldas, Cauca, Chocó, Quindío, Cundinamarca, Risaralda, Huila, Valle del Cauca, Tolima, Putumayo, Norte de Santander, Bolívar, Nariño y Sucre.\nMarcación CAN-CGN Código 2 meses\nSuspensión temporal Resolución 8332 de 2026 Desastre Natural\nCuenta: ${data.cuenta || ''}\nTiempo de la suspensión: ${data.tiempo_suspension || ''}\nFecha de inicio y fin: ${data.fecha_inicio_fin || ''}\nServicios a suspender: ${data.servicios_suspender || ''}\nCliente acepta que es una suspensión temporal: ${data.cliente_acepta || ''}`;
+                    return `PLANTILLAS DE GESTIÓN\nSuspensión Temporal por Desastre Natural (HOGAR)\nDepartamentos donde aplica: Antioquia, Caldas, Cauca, Chocó, Quindío, Cundinamarca, Risaralda, Huila, Valle del Cauca, Tolima, Putumayo, Norte de Santander, Bolívar, Nariño y Sucre.\nMarcación CAN-CGN Código 2 meses\nSuspensión temporal Resolución 8332 de 2026 Desastre Natural\nCuenta: ${data.cuenta || ''}\nTiempo de la suspensión: ${data.tiempo_suspension || ''}\nFecha de inicio: ${data.fecha_inicio || ''}\nFecha de finalización: ${data.fecha_finalizacion || ''}\nServicios a suspender: ${data.servicios_suspender || ''}\nCliente acepta que es una suspensión temporal: ${data.cliente_acepta || ''}`;
                 }
             },
             {
@@ -410,6 +411,22 @@
         // Update form data state
         function updateFormData(fieldId, value) {
             formData[fieldId] = value;
+
+            // Validate date range: finalización no puede ser anterior a inicio
+            const inicio = formData['fecha_inicio'];
+            const fin = formData['fecha_finalizacion'];
+            const finInput = document.getElementById('fecha_finalizacion');
+            const inicioInput = document.getElementById('fecha_inicio');
+
+            if (inicioInput && inicio) inicioInput.max = fin || '';
+            if (finInput && inicio) finInput.min = inicio;
+
+            if (inicio && fin && fin < inicio) {
+                formData['fecha_finalizacion'] = '';
+                if (finInput) finInput.value = '';
+                alert('La fecha de finalización no puede ser anterior a la fecha de inicio.');
+            }
+
             updatePreview();
         }
 
