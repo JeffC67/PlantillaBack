@@ -195,7 +195,7 @@
                 name: 'Normalización de Tarifa Especial',
                 category: 'Tarifas',
                 icon: 'fa-tags',
-                notice: 'IMPORTANTE: Aplicar tarifa de la misma tecnología actual del cliente. Si es por migración, solicitar normalización de tarifa HFC y luego realizar la migración. Se deja notas en F7 y se escala por Genesys de BackOffice.',
+                notice: 'IMPORTANTE: Dejar esta plantilla con la información solicitada en la carpeta de RR F7 Gestión Cliente Críticos. Desde Genesys, dejar escalado al Back Office.',
                 fields: [
                     { id: 'cuenta', label: 'Cuenta', type: 'text', placeholder: 'Ej. 38472910' },
                     { id: 'orden_trabajo', label: 'Orden de trabajo donde se aplicó tarifa especial', type: 'text', placeholder: 'Ej. OT-548923' },
@@ -287,6 +287,63 @@
                 ],
                 formatter: (data) => {
                     return `PLANTILLAS DE GESTIÓN\nSuspensión Temporal por Desastre Natural (MÓVIL)\nDepartamentos donde aplica: Antioquia, Caldas, Cauca, Chocó, Quindío, Cundinamarca, Risaralda, Huila, Valle del Cauca, Tolima, Putumayo, Norte de Santander, Bolívar, Nariño y Sucre.\nTickler DESNSUSP (en coordenada colocar cantidad de meses, tickler abierto)\nSuspensión temporal Resolución 8332 de 2026 Desastre Natural\nMIN / Número Móvil: ${data.min_movil || ''}\nFecha de inicio: ${data.fecha_inicio || ''}\nFecha de finalización: ${data.fecha_finalizacion || ''}\nNúmero de contacto adicional: ${data.numero_contacto_adicional || ''}\nCliente acepta que es una suspensión temporal: ${data.cliente_acepta || ''}`;
+                }
+            },
+            {
+                id: 'visita_tecnica',
+                name: 'Visita técnica',
+                category: 'Visita técnica',
+                icon: 'fa-screwdriver-wrench',
+                notice: 'IMPORTANTE: Esta plantilla se utiliza para cierres de órdenes de trabajo, recomendaciones de visita técnica, reportes de incumplimiento de técnicos y solicitudes de reagendamiento cuando el cliente no pueda hacerlo por los medios de autogestión.',
+                fields: [
+                    { id: 'cuenta', label: 'Cuenta', type: 'text', placeholder: 'Ingrese la cuenta' },
+                    { id: 'ot_lls', label: 'OT/LLS', type: 'text', placeholder: 'Ingrese OT o LLS' },
+                    { id: 'motivo_visita', label: 'Motivo de visita', type: 'text', placeholder: 'Ingrese el motivo de la visita' },
+                    { id: 'ciudad', label: 'Ciudad', type: 'text', placeholder: 'Ingrese la ciudad' },
+                    { id: 'aliado', label: 'Aliado', type: 'text', placeholder: 'Ingrese el aliado' },
+                    { id: 'dia', label: 'Día', type: 'date', placeholder: '' },
+                    { id: 'franja', label: 'Franja', type: 'text', placeholder: 'Ingrese la franja horaria' },
+                    { id: 'contacto', label: 'Contacto', type: 'tel', placeholder: 'Ingrese el número de contacto' },
+                    { id: 'detalle', label: 'Detalle', type: 'textarea', placeholder: 'Ingrese el detalle de la solicitud' }
+                ],
+                formatter: (data) => {
+                    return `PLANTILLAS DE GESTIÓN\nVisita técnica\nCuenta: ${data.cuenta || ''}\nOT/LLS: ${data.ot_lls || ''}\nMotivo de visita: ${data.motivo_visita || ''}\nCiudad: ${data.ciudad || ''}\nAliado: ${data.aliado || ''}\nDía: ${data.dia || ''}\nFranja: ${data.franja || ''}\nContacto: ${data.contacto || ''}\nDetalle: ${data.detalle || ''}`;
+                }
+            },
+            {
+                id: 'alarma_revista_15_min',
+                name: 'Alarma puntual: Revista 15 min no llega',
+                category: 'Alarmas',
+                icon: 'fa-bell',
+                notice: 'IMPORTANTE: Dejar esta plantilla con la información solicitada en la carpeta de RR F7 Gestión cliente críticos. Desde Genesys, dejar escalado al Back Office.',
+                fields: [
+                    { id: 'cuenta', label: 'Cuenta', type: 'text', placeholder: 'Ingrese la cuenta' },
+                    { id: 'nombre_usuario', label: 'Nombre completo del Usuario', type: 'text', placeholder: 'Ingrese el nombre completo' },
+                    { id: 'numero_celular', label: 'Número Celular', type: 'tel', placeholder: 'Ingrese el número celular' },
+                    { id: 'identificacion_cliente', label: 'Número de Identificación del Cliente', type: 'text', placeholder: 'Ingrese el número de identificación' },
+                    { id: 'orden_fecha_activacion', label: 'Orden y Fecha de activación del Servicio', type: 'text', placeholder: 'Ingrese la orden y fecha de activación' },
+                    { id: 'detalle_reclamacion', label: 'Detalle de la reclamación', type: 'textarea', placeholder: 'Describa el detalle de la reclamación' }
+                ],
+                formatter: (data) => {
+                    return `PLANTILLAS DE GESTIÓN\nAlarma puntual Revista 15 min no llega\nCuenta: ${data.cuenta || ''}\nNombre completo del Usuario: ${data.nombre_usuario || ''}\nNúmero Celular: ${data.numero_celular || ''}\nNúmero de Identificación del Cliente: ${data.identificacion_cliente || ''}\nOrden y Fecha de activación del Servicio: ${data.orden_fecha_activacion || ''}\nDetalle de la reclamación: ${data.detalle_reclamacion || ''}`;
+                }
+            },
+            {
+                id: 'alarma_caso_puntual',
+                name: 'Alarma de caso puntual',
+                category: 'Alarmas',
+                icon: 'fa-triangle-exclamation',
+                notice: 'IMPORTANTE: Utilizar esta plantilla cuando se requiera alarmar un caso puntual. Se puede enviar a Back Office o al supervisor.',
+                fields: [
+                    { id: 'cuenta', label: 'Cuenta', type: 'text', placeholder: 'Ingrese la cuenta' },
+                    { id: 'orden', label: 'Orden', type: 'text', placeholder: 'Ingrese la orden' },
+                    { id: 'radicado_tickler', label: 'Radicado/tickler', type: 'text', placeholder: 'Ingrese el radicado o tickler' },
+                    { id: 'tarifa', label: 'Tarifa', type: 'text', placeholder: 'Ingrese la tarifa' },
+                    { id: 'asesor', label: 'Asesor', type: 'text', placeholder: 'Ingrese el asesor' },
+                    { id: 'detalle_alarma', label: 'Detalle de la alarma', type: 'textarea', placeholder: 'Describa el detalle de la alarma' }
+                ],
+                formatter: (data) => {
+                    return `PLANTILLAS DE GESTIÓN\nFavor copiar la plantilla y llenar la información solicitada completa\nCuenta: ${data.cuenta || ''}\nOrden: ${data.orden || ''}\nRadicado/tickler: ${data.radicado_tickler || ''}\nTarifa: ${data.tarifa || ''}\nAsesor: ${data.asesor || ''}\nDetalle de la alarma: ${data.detalle_alarma || ''}`;
                 }
             }
         ];
