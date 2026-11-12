@@ -96,8 +96,8 @@
                 <div>
                     <div class="flex items-center justify-between pb-4 mb-6 border-b border-slate-100">
                         <div>
-                            <span id="form-category-badge" class="text-xs font-semibold px-2.5 py-1 rounded-md bg-rose-50 text-rose-600 uppercase tracking-wide">Desbloqueo</span>
-                            <h2 id="form-title" class="text-xl font-bold text-slate-900 mt-1">Desbloqueo de Equipo Televisor</h2>
+                            <span id="form-category-badge" class="text-xs font-semibold px-2.5 py-1 rounded-md bg-rose-50 text-rose-600 uppercase tracking-wide">Calidad</span>
+                            <h2 id="form-title" class="text-xl font-bold text-slate-900 mt-1">Escucha de llamada</h2>
                         </div>
                         <button onclick="resetCurrentForm()" class="text-xs font-medium text-slate-400 hover:text-slate-600 transition-colors flex items-center gap-1 bg-slate-50 hover:bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200">
                             <i class="fa-solid fa-rotate-right"></i> Limpiar Campos
@@ -172,11 +172,50 @@
         // Database of Templates based on 'Plantillas Back nueva.docx'
         const templates = [
             {
-                id: 'desbloqueo',
-                name: 'Desbloqueo de Equipo Televisor',
+                id: 'escucha_llamada',
+                name: 'Escucha de llamada',
+                category: 'Calidad',
+                icon: 'fa-headphones',
+                notice: 'IMPORTANTE: Dejar esta plantilla en la carpeta de RR F7 Gestión cliente críticos y dejar escalado al Back Office desde Genesys (solo aplica la última marcación en caso de retención CAN-1RE o CAN-2RE).',
+                fields: [
+                    { id: 'cuenta_min', label: 'Cuenta/min', type: 'text', placeholder: 'Ej. 3159876543' },
+                    { id: 'gestion', label: 'Gestión (Retención o Ventas)', type: 'select', options: ['Retención', 'Ventas'], placeholder: '' },
+                    { id: 'radicado_tickler_ot', label: 'Radicado/tickler/OT', type: 'text', placeholder: 'Ingrese radicado, tickler u OT' },
+                    { id: 'hora_fecha_llamada', label: 'Hora y Fecha Llamada', type: 'datetime-local', placeholder: '' },
+                    { id: 'asesor', label: 'Asesor o código de vendedor', type: 'text', placeholder: 'Ingrese nombre o código' },
+                    { id: 'servicios_informados', label: 'Servicios informados a cliente', type: 'text', placeholder: 'Ej. Dúo Internet + TV' },
+                    { id: 'valor_informado', label: 'Valor mensual informado a cliente', type: 'text', placeholder: 'Ej. $110.000' },
+                    { id: 'descripcion', label: 'Descripción', type: 'textarea', placeholder: 'Describa la gestión de la llamada...' }
+                ],
+                formatter: (data) => {
+                    return `PLANTILLAS DE GESTIÓN\nEscucha de llamada\nCuenta/min: ${data.cuenta_min || ''}\nGestión (Retención o Ventas): ${data.gestion || ''}\nRadicado/tickler/OT: ${data.radicado_tickler_ot || ''}\nHora y Fecha Llamada: ${data.hora_fecha_llamada || ''}\nAsesor o código de vendedor: ${data.asesor || ''}\nServicios informados a cliente: ${data.servicios_informados || ''}\nValor mensual informado a cliente: ${data.valor_informado || ''}\nDescripción: ${data.descripcion || ''}`;
+                }
+            },
+            {
+                id: 'tarifa_especial',
+                name: 'Tarifa especial por tarifa nueva comercial',
+                category: 'Tarifas',
+                icon: 'fa-tags',
+                notice: 'IMPORTANTE: Dejar esta plantilla en la carpeta de RR F7 Gestión cliente críticos y escalar al Back Office desde Genesys.',
+                fields: [
+                    { id: 'cuenta', label: 'Cuenta', type: 'text', placeholder: 'Ej. 38472910' },
+                    { id: 'orden_trabajo', label: 'Orden de trabajo donde se aplicó tarifa especial', type: 'text', placeholder: 'Ej. OT-548923' },
+                    { id: 'codigo_tarifa', label: 'Código de tarifa', type: 'text', placeholder: 'Ej. TAR-HFC-09' },
+                    { id: 'tecnologia', label: 'Tecnología (HFC / FTTH)', type: 'select', options: ['HFC', 'FTTH'], placeholder: '' },
+                    { id: 'asesor', label: 'Asesor que aplicó tarifa', type: 'text', placeholder: 'Ej. Carlos Martínez' },
+                    { id: 'se_requiere_cambio', label: 'Se requiere cambio de tarifa', type: 'text', placeholder: 'Ej. Cambiar Tarifa Básica 200M por Tarifa Promo 500M' },
+                    { id: 'valor_final', label: 'Valor mensual final', type: 'text', placeholder: 'Ej. $79.900' }
+                ],
+                formatter: (data) => {
+                    return `PLANTILLAS DE GESTIÓN\nTarifa especial por tarifa nueva comercial\nCuenta: ${data.cuenta || ''}\nOrden de trabajo donde se aplicó tarifa especial: ${data.orden_trabajo || ''}\nCódigo de tarifa: ${data.codigo_tarifa || ''}\nTecnología (HFC / FTTH): ${data.tecnologia || ''}\nAsesor que aplicó tarifa: ${data.asesor || ''}\nSe requiere cambio de tarifa: ${data.se_requiere_cambio || ''}\nValor mensual final: ${data.valor_final || ''}`;
+                }
+            },
+            {
+                id: 'desbloqueo_televisor',
+                name: 'Desbloqueo de Televisor',
                 category: 'Televisor',
                 icon: 'fa-tv',
-                notice: '',
+                notice: 'IMPORTANTE: Se debe escalar directamente al apoyo en piso.',
                 fields: [
                     { id: 'cuenta', label: 'Cuenta', type: 'text', placeholder: 'Ej. 10928374' },
                     { id: 'nombre_cliente', label: 'Nombre de cliente', type: 'text', placeholder: 'Ej. Juan Pérez Gómez' },
@@ -187,115 +226,15 @@
                     { id: 'saldo', label: 'Saldo debe estar en $0', type: 'select', options: ['Sí ($0)', 'No'], placeholder: '' }
                 ],
                 formatter: (data) => {
-                    return `PLANTILLAS DE GESTIÓN\nDesbloqueo de Equipo Televisor\nCuenta: ${data.cuenta || ''}\nNombre de cliente: ${data.nombre_cliente || ''}\nCédula: ${data.cedula || ''}\nIMEI: ${data.imei || ''}\nCrédito: ${data.credito || ''}\nFecha de último pago: ${data.fecha_ultimo_pago || ''}\nSaldo debe estar en $0: ${data.saldo || ''}`;
-                }
-            },
-            {
-                id: 'normalizacion_tarifa',
-                name: 'Escucha de llamada: Tarifa especial',
-                category: 'Calidad',
-                icon: 'fa-tags',
-                notice: 'IMPORTANTE: Copiar y completar toda la información. Dejar esta plantilla en la carpeta RR F7 Gestión cliente críticos y escalar al Back Office desde Genesys.',
-                fields: [
-                    { id: 'cuenta', label: 'Cuenta', type: 'text', placeholder: 'Ej. 38472910' },
-                    { id: 'orden_trabajo', label: 'Orden de trabajo donde se aplicó tarifa especial', type: 'text', placeholder: 'Ej. OT-548923' },
-                    { id: 'codigo_tarifa', label: 'Código de tarifa', type: 'text', placeholder: 'Ej. TAR-HFC-09' },
-                    { id: 'tecnologia', label: 'Tecnología (HFC o FTTH)', type: 'select', options: ['HFC', 'FTTH'], placeholder: '' },
-                    { id: 'asesor', label: 'Asesor que aplicó tarifa', type: 'text', placeholder: 'Ej. Carlos Martínez' },
-                    { id: 'tarifa_actual', label: 'Cambiar tarifa actual', type: 'text', placeholder: 'Ej. Tarifa Básica 200M' },
-                    { id: 'tarifa_nueva', label: 'Por tarifa nueva comercial', type: 'text', placeholder: 'Ej. Tarifa Promo 500M' },
-                    { id: 'valor_final', label: 'Valor mensual final', type: 'text', placeholder: 'Ej. $79.900' }
-                ],
-                formatter: (data) => {
-                    return `PLANTILLAS DE GESTIÓN\nEscucha de llamada: Tarifa especial\nCuenta: ${data.cuenta || ''}\nOrden de trabajo donde se aplicó tarifa especial: ${data.orden_trabajo || ''}\nCódigo de tarifa: ${data.codigo_tarifa || ''}\nTecnología (HFC o FTTH): ${data.tecnologia || ''}\nAsesor que aplicó tarifa: ${data.asesor || ''}\nSe requiere cambio de tarifa ${data.tarifa_actual || '_____'} por tarifa nueva comercial ${data.tarifa_nueva || '_____'}.\nValor mensual final: ${data.valor_final || ''}`;
-                }
-            },
-            {
-                id: 'claro_drive',
-                name: 'OTTS Claro Drive',
-                category: 'Aplicaciones',
-                icon: 'fa-cloud',
-                notice: 'IMPORTANTE: Completar toda la información, dejar esta plantilla en la carpeta RR F7 Gestión cliente críticos y escalar al Back Office desde Genesys.',
-                fields: [
-                    { id: 'cuenta', label: 'Cuenta', type: 'text', placeholder: 'Ej. 92837465' },
-                    { id: 'numero_contacto', label: 'Número de contacto', type: 'tel', placeholder: 'Ej. 3101234567' },
-                    { id: 'mensaje_error', label: 'Mensaje de error', type: 'text', placeholder: 'Ej. Error de autenticación 500' },
-                    { id: 'correo', label: 'Correo electrónico', type: 'email', placeholder: 'Ej. cliente@gmail.com' },
-                    { id: 'tipo_suscripcion', label: 'Tipo de suscripción (Paga o Bundle)', type: 'select', options: ['Paga', 'Bundle'], placeholder: '' },
-                    { id: 'fecha_hora_falla', label: 'Fecha y hora de falla', type: 'datetime-local', placeholder: '' },
-                    { id: 'dispositivo', label: 'Dispositivo utilizado', type: 'text', placeholder: 'Ej. Smartphone / PC' },
-                    { id: 'marca_modelo', label: 'Marca o modelo de equipo', type: 'text', placeholder: 'Ej. Samsung Galaxy S23' },
-                    { id: 'sistema_operativo', label: 'Sistema operativo', type: 'text', placeholder: 'Ej. Android 14 / Windows 11' },
-                    { id: 'version_app', label: 'Versión del App', type: 'text', placeholder: 'Ej. v12.4.1' },
-                    { id: 'acceso_red', label: 'Tipo de acceso a la red (WiFi o LAN)', type: 'select', options: ['WiFi', 'LAN'], placeholder: '' },
-                    { id: 'navegador', label: 'Navegador', type: 'text', placeholder: 'Ej. Google Chrome v120' },
-                    { id: 'utiliza_proxy', label: '¿Utiliza Proxy?', type: 'select', options: ['No', 'Sí'], placeholder: '' }
-                ],
-                formatter: (data) => {
-                    return `PLANTILLAS DE GESTIÓN\nClaro Drive\nCuenta: ${data.cuenta || ''}\nNúmero de contacto: ${data.numero_contacto || ''}\nMensaje de error: ${data.mensaje_error || ''}\nCorreo electrónico: ${data.correo || ''}\nTipo de suscripción (Paga o Bundle): ${data.tipo_suscripcion || ''}\nFecha y hora de falla: ${data.fecha_hora_falla || ''}\nDispositivo utilizado: ${data.dispositivo || ''}\nMarca o modelo de equipo: ${data.marca_modelo || ''}\nSistema operativo: ${data.sistema_operativo || ''}\nVersión del App: ${data.version_app || ''}\nTipo de acceso a la red (WiFi o LAN): ${data.acceso_red || ''}\nNavegador: ${data.navegador || ''}\n¿Utiliza Proxy?: ${data.utiliza_proxy || ''}`;
-                }
-            },
-            {
-                id: 'escucha_llamada',
-                name: 'Escucha de Llamada',
-                category: 'Calidad',
-                icon: 'fa-headphones',
-                notice: 'IMPORTANTE: Copiar y completar toda la información. Dejar esta plantilla en la carpeta RR F7 Gestión cliente críticos y escalar al Back Office desde Genesys. Para retención, solo aplica la última marcación CAN-1RE o CAN-2RE.',
-                fields: [
-                    { id: 'cuenta_min', label: 'Cuenta/MIN', type: 'text', placeholder: 'Ej. 3159876543' },
-                    { id: 'gestion', label: 'Gestión (Ventas o Retención)', type: 'select', options: ['Ventas', 'Retención'], placeholder: '' },
-                    { id: 'radicado_tickler_ot', label: 'Radicado/tickler/OT', type: 'text', placeholder: 'Ingrese radicado, tickler u OT' },
-                    { id: 'hora_fecha_llamada', label: 'Hora y fecha de llamada', type: 'datetime-local', placeholder: '' },
-                    { id: 'asesor', label: 'Asesor o código de vendedor', type: 'text', placeholder: 'Ingrese nombre o código' },
-                    { id: 'servicios_informados', label: 'Servicios informados al cliente', type: 'text', placeholder: 'Ej. Dúo Internet + TV' },
-                    { id: 'valor_informado', label: 'Valor informado al cliente', type: 'text', placeholder: 'Ej. $110.000' },
-                    { id: 'descripcion', label: 'Descripción', type: 'textarea', placeholder: 'Describa la gestión de la llamada...' }
-                ],
-                formatter: (data) => {
-                    return `PLANTILLAS DE GESTIÓN\nEscucha de Llamada\nCuenta/min: ${data.cuenta_min || ''}\nGestión (Retención o Ventas): ${data.gestion || ''}\nRadicado/tickler/OT: ${data.radicado_tickler_ot || ''}\nHora y Fecha Llamada: ${data.hora_fecha_llamada || ''}\nAsesor o código de vendedor: ${data.asesor || ''}\nServicios informados a cliente: ${data.servicios_informados || ''}\nValor mensual informado a cliente: ${data.valor_informado || ''}\nDescripción: ${data.descripcion || ''}`;
-                }
-            },
-            {
-                id: 'suspension_hogar',
-                name: 'Suspensión Desastre Natural (Hogar)',
-                category: 'Desastre Natural',
-                icon: 'fa-house-chimney',
-                notice: 'Departamentos donde aplica: Antioquia, Caldas, Cauca, Chocó, Quindío, Cundinamarca, Risaralda, Huila, Valle del Cauca, Tolima, Putumayo, Norte de Santander, Bolívar, Nariño y Sucre.\nHOGAR: Marcación CAN-CGN Código 2 meses. Suspensión temporal Resolución 8332 de 2026 Desastre Natural',
-                fields: [
-                    { id: 'cuenta', label: 'Cuenta', type: 'text', placeholder: 'Ej. 77382910' },
-                    { id: 'tiempo_suspension', label: 'Tiempo de la suspensión', type: 'text', placeholder: 'Ej. 2 Meses' },
-                    { id: 'fecha_inicio', label: 'Fecha de inicio', type: 'date', placeholder: '' },
-                    { id: 'fecha_finalizacion', label: 'Fecha de finalización', type: 'date', placeholder: '' },
-                    { id: 'servicios_suspender', label: 'Servicios a suspender', type: 'text', placeholder: 'Ej. Internet, Televisión, Telefonía' },
-                    { id: 'cliente_acepta', label: 'Cliente acepta que es una suspensión temporal', type: 'select', options: ['Sí', 'No'], placeholder: '' }
-                ],
-                formatter: (data) => {
-                    return `PLANTILLAS DE GESTIÓN\nSuspensión Temporal por Desastre Natural (HOGAR)\nDepartamentos donde aplica: Antioquia, Caldas, Cauca, Chocó, Quindío, Cundinamarca, Risaralda, Huila, Valle del Cauca, Tolima, Putumayo, Norte de Santander, Bolívar, Nariño y Sucre.\nMarcación CAN-CGN Código 2 meses\nSuspensión temporal Resolución 8332 de 2026 Desastre Natural\nCuenta: ${data.cuenta || ''}\nTiempo de la suspensión: ${data.tiempo_suspension || ''}\nFecha de inicio: ${data.fecha_inicio || ''}\nFecha de finalización: ${data.fecha_finalizacion || ''}\nServicios a suspender: ${data.servicios_suspender || ''}\nCliente acepta que es una suspensión temporal: ${data.cliente_acepta || ''}`;
-                }
-            },
-            {
-                id: 'suspension_movil',
-                name: 'Suspensión Desastre Natural (Móvil)',
-                category: 'Desastre Natural',
-                icon: 'fa-mobile-screen',
-                notice: 'Departamentos donde aplica: Antioquia, Caldas, Cauca, Chocó, Quindío, Cundinamarca, Risaralda, Huila, Valle del Cauca, Tolima, Putumayo, Norte de Santander, Bolívar, Nariño y Sucre.\nMÓVIL: Tickler DESNSUSP (en coordenada colocar cantidad de meses, tickler abierto). Suspensión temporal Resolución 8332 de 2026 Desastre Natural',
-                fields: [
-                    { id: 'min_movil', label: 'MIN / Número Móvil', type: 'text', placeholder: 'Ej. 3209876543' },
-                    { id: 'fecha_inicio', label: 'Fecha de inicio', type: 'date', placeholder: '' },
-                    { id: 'fecha_finalizacion', label: 'Fecha de finalización', type: 'date', placeholder: '' },
-                    { id: 'numero_contacto_adicional', label: 'Número de contacto adicional', type: 'tel', placeholder: 'Ej. 3112223344' },
-                    { id: 'cliente_acepta', label: 'Cliente acepta que es una suspensión temporal', type: 'select', options: ['Sí', 'No'], placeholder: '' }
-                ],
-                formatter: (data) => {
-                    return `PLANTILLAS DE GESTIÓN\nSuspensión Temporal por Desastre Natural (MÓVIL)\nDepartamentos donde aplica: Antioquia, Caldas, Cauca, Chocó, Quindío, Cundinamarca, Risaralda, Huila, Valle del Cauca, Tolima, Putumayo, Norte de Santander, Bolívar, Nariño y Sucre.\nTickler DESNSUSP (en coordenada colocar cantidad de meses, tickler abierto)\nSuspensión temporal Resolución 8332 de 2026 Desastre Natural\nMIN / Número Móvil: ${data.min_movil || ''}\nFecha de inicio: ${data.fecha_inicio || ''}\nFecha de finalización: ${data.fecha_finalizacion || ''}\nNúmero de contacto adicional: ${data.numero_contacto_adicional || ''}\nCliente acepta que es una suspensión temporal: ${data.cliente_acepta || ''}`;
+                    return `PLANTILLAS DE GESTIÓN\nDesbloqueo de Televisor\nCuenta: ${data.cuenta || ''}\nNombre de cliente: ${data.nombre_cliente || ''}\nCédula: ${data.cedula || ''}\nIMEI: ${data.imei || ''}\nCrédito: ${data.credito || ''}\nFecha de último pago: ${data.fecha_ultimo_pago || ''}\nSaldo debe estar en $0: ${data.saldo || ''}`;
                 }
             },
             {
                 id: 'visita_tecnica',
-                name: 'Desbloqueo de Televisor: Visita técnica',
+                name: 'Visita técnica',
                 category: 'Visita técnica',
                 icon: 'fa-screwdriver-wrench',
-                notice: 'IMPORTANTE: Esta plantilla se utiliza para cierres de órdenes de trabajo, recomendaciones de visita técnica, reportes de incumplimiento de técnicos y solicitudes de reagendamiento cuando el cliente no pueda hacerlo por los medios de autogestión.',
+                notice: 'IMPORTANTE: Esta plantilla se utiliza para cierres de órdenes de trabajo, recomendaciones de visitas técnicas, reportar incumplimiento de técnicos o solicitar reagendamientos (si el cliente no puede por autogestión).',
                 fields: [
                     { id: 'cuenta', label: 'Cuenta', type: 'text', placeholder: 'Ingrese la cuenta' },
                     { id: 'ot_lls', label: 'OT/LLS', type: 'text', placeholder: 'Ingrese OT o LLS' },
@@ -312,29 +251,11 @@
                 }
             },
             {
-                id: 'alarma_revista_15_min',
-                name: 'Alarma puntual: Revista 15 min no llega',
-                category: 'Alarmas',
-                icon: 'fa-bell',
-                notice: 'IMPORTANTE: Dejar esta plantilla con la información solicitada en la carpeta de RR F7 Gestión cliente críticos. Desde Genesys, dejar escalado al Back Office.',
-                fields: [
-                    { id: 'cuenta', label: 'Cuenta', type: 'text', placeholder: 'Ingrese la cuenta' },
-                    { id: 'nombre_usuario', label: 'Nombre completo del Usuario', type: 'text', placeholder: 'Ingrese el nombre completo' },
-                    { id: 'numero_celular', label: 'Número Celular', type: 'tel', placeholder: 'Ingrese el número celular' },
-                    { id: 'identificacion_cliente', label: 'Número de Identificación del Cliente', type: 'text', placeholder: 'Ingrese el número de identificación' },
-                    { id: 'orden_fecha_activacion', label: 'Orden y Fecha de activación del Servicio', type: 'text', placeholder: 'Ingrese la orden y fecha de activación' },
-                    { id: 'detalle_reclamacion', label: 'Detalle de la reclamación', type: 'textarea', placeholder: 'Describa el detalle de la reclamación' }
-                ],
-                formatter: (data) => {
-                    return `PLANTILLAS DE GESTIÓN\nAlarma puntual Revista 15 min no llega\nCuenta: ${data.cuenta || ''}\nNombre completo del Usuario: ${data.nombre_usuario || ''}\nNúmero Celular: ${data.numero_celular || ''}\nNúmero de Identificación del Cliente: ${data.identificacion_cliente || ''}\nOrden y Fecha de activación del Servicio: ${data.orden_fecha_activacion || ''}\nDetalle de la reclamación: ${data.detalle_reclamacion || ''}`;
-                }
-            },
-            {
-                id: 'alarma_caso_puntual',
-                name: 'Alarma de caso puntual',
+                id: 'alarma_puntual',
+                name: 'Alarma puntual',
                 category: 'Alarmas',
                 icon: 'fa-triangle-exclamation',
-                notice: 'IMPORTANTE: Utilizar esta plantilla cuando se requiera alarmar un caso puntual. Se puede enviar a Back Office o al supervisor.',
+                notice: 'IMPORTANTE: Se puede enviar a los Back Office o al supervisor.',
                 fields: [
                     { id: 'cuenta', label: 'Cuenta', type: 'text', placeholder: 'Ingrese la cuenta' },
                     { id: 'orden', label: 'Orden', type: 'text', placeholder: 'Ingrese la orden' },
@@ -344,73 +265,99 @@
                     { id: 'detalle_alarma', label: 'Detalle de la alarma', type: 'textarea', placeholder: 'Describa el detalle de la alarma' }
                 ],
                 formatter: (data) => {
-                    return `PLANTILLAS DE GESTIÓN\nFavor copiar la plantilla y llenar la información solicitada completa\nCuenta: ${data.cuenta || ''}\nOrden: ${data.orden || ''}\nRadicado/tickler: ${data.radicado_tickler || ''}\nTarifa: ${data.tarifa || ''}\nAsesor: ${data.asesor || ''}\nDetalle de la alarma: ${data.detalle_alarma || ''}`;
+                    return `PLANTILLAS DE GESTIÓN\nAlarma puntual\nCuenta: ${data.cuenta || ''}\nOrden: ${data.orden || ''}\nRadicado/tickler: ${data.radicado_tickler || ''}\nTarifa: ${data.tarifa || ''}\nAsesor: ${data.asesor || ''}\nDetalle de la alarma: ${data.detalle_alarma || ''}`;
                 }
             },
             {
-                id: 'pagos_no_aplicados_td',
-                name: 'Pagos no aplicados: Error T&D',
-                category: 'Pagos',
-                icon: 'fa-credit-card',
-                notice: 'IMPORTANTE: Solo aplica si T&D presenta un error. Enviar al apoyo en piso por Teams junto con el pantallazo del error y completar estos datos.',
+                id: 'revista_15_min',
+                name: 'Revista 15 min no llega',
+                category: 'Alarmas',
+                icon: 'fa-bell',
+                notice: 'IMPORTANTE: Dejar la plantilla en la carpeta de RR F7 Gestión cliente críticos y escalar al Back Office desde Genesys.',
                 fields: [
                     { id: 'cuenta', label: 'Cuenta', type: 'text', placeholder: 'Ingrese la cuenta' },
-                    { id: 'nombre_cliente', label: 'Nombre cliente', type: 'text', placeholder: 'Ingrese el nombre completo' },
-                    { id: 'cedula', label: 'Cédula', type: 'text', placeholder: 'Ingrese el documento' },
-                    { id: 'id_td', label: 'ID de T&D', type: 'text', placeholder: 'Ingrese el ID de T&D' },
-                    { id: 'razon_envio_visita', label: 'Razón de envío de visita', type: 'textarea', placeholder: 'Describa la razón' },
-                    { id: 'tecnologia', label: 'HFC o FTTH', type: 'select', options: ['HFC', 'FTTH'], placeholder: '' },
-                    { id: 'usuario_asesor', label: 'Usuario asesor', type: 'text', placeholder: 'Ingrese el usuario del asesor' },
-                    { id: 'aliado', label: 'Aliado', type: 'text', placeholder: 'INDRA' }
+                    { id: 'nombre_usuario', label: 'Nombre completo del Usuario', type: 'text', placeholder: 'Ingrese el nombre completo' },
+                    { id: 'numero_celular', label: 'Número Celular', type: 'tel', placeholder: 'Ingrese el número celular' },
+                    { id: 'identificacion_cliente', label: 'Número de Identificación del Cliente', type: 'text', placeholder: 'Ingrese el número de identificación' },
+                    { id: 'orden_fecha_activacion', label: 'Orden y Fecha de activación del Servicio', type: 'text', placeholder: 'Ingrese la orden y fecha de activación' },
+                    { id: 'detalle_reclamacion', label: 'Detalle de la reclamación', type: 'textarea', placeholder: 'Describa el detalle de la reclamación' }
                 ],
                 formatter: (data) => {
-                    return `PLANTILLAS DE GESTIÓN\nPagos no aplicados: Error T&D\nCuenta: ${data.cuenta || ''}\nNombre cliente: ${data.nombre_cliente || ''}\nCédula: ${data.cedula || ''}\nID de T&D: ${data.id_td || ''}\nRazón de envío de visita: ${data.razon_envio_visita || ''}\nHFC o FTTH: ${data.tecnologia || ''}\nUsuario asesor: ${data.usuario_asesor || ''}\nAliado: ${data.aliado || 'INDRA'}`;
+                    return `PLANTILLAS DE GESTIÓN\nRevista 15 min no llega\nCuenta: ${data.cuenta || ''}\nNombre completo del Usuario: ${data.nombre_usuario || ''}\nNúmero Celular: ${data.numero_celular || ''}\nNúmero de Identificación del Cliente: ${data.identificacion_cliente || ''}\nOrden y Fecha de activación del Servicio: ${data.orden_fecha_activacion || ''}\nDetalle de la reclamación: ${data.detalle_reclamacion || ''}`;
                 }
             },
             {
-                id: 'pagos_no_aplicados_correo',
-                name: 'Pagos no aplicados: Reporte de pago',
+                id: 'mi_asistencia_360',
+                name: 'Requerimiento Mi Asistencia 360 (OTTs / Claro Drive)',
+                category: 'Aplicaciones',
+                icon: 'fa-cloud',
+                notice: 'IMPORTANTE: Solicitar pantallazos de los errores al cliente. Dejar la plantilla en la carpeta de RR F7 Gestión cliente críticos y escalar al Back Office desde Genesys.',
+                fields: [
+                    { id: 'cuenta', label: 'Cuenta', type: 'text', placeholder: 'Ej. 92837465' },
+                    { id: 'cedula', label: 'Cédula (si es móvil)', type: 'text', placeholder: 'Ej. 1020304050' },
+                    { id: 'correo', label: 'Correo electrónico', type: 'email', placeholder: 'Ej. cliente@gmail.com' },
+                    { id: 'nombre_ott', label: 'Nombre de OTT', type: 'text', placeholder: 'Ej. Netflix' },
+                    { id: 'otts', label: 'OTTs', type: 'text', placeholder: 'Ej. Netflix, Max, Paramount+' },
+                    { id: 'numero_contacto', label: 'Número de contacto (Claro Drive)', type: 'tel', placeholder: 'Ej. 3101234567' },
+                    { id: 'mensaje_error', label: 'Mensaje de error (Claro Drive)', type: 'text', placeholder: 'Ej. Error de autenticación 500' },
+                    { id: 'tipo_suscripcion', label: 'Tipo de suscripción (Paga o Bundle)', type: 'select', options: ['Paga', 'Bundle'], placeholder: '' },
+                    { id: 'fecha_hora_falla', label: 'Fecha y hora de falla', type: 'datetime-local', placeholder: '' },
+                    { id: 'dispositivo', label: 'Dispositivo utilizado (computador o teléfono)', type: 'text', placeholder: 'Ej. Computador / Teléfono' },
+                    { id: 'marca_modelo', label: 'Marca o modelo de equipo', type: 'text', placeholder: 'Ej. Samsung Galaxy S23' },
+                    { id: 'sistema_operativo', label: 'Sistema operativo (iOS, Android, etc.)', type: 'text', placeholder: 'Ej. Android 14 / Windows 11' },
+                    { id: 'version_app', label: 'Versión del App', type: 'text', placeholder: 'Ej. v12.4.1' },
+                    { id: 'acceso_red', label: 'Tipo de acceso a la red (Wifi o LAN)', type: 'select', options: ['Wifi', 'LAN'], placeholder: '' },
+                    { id: 'navegador', label: 'Navegador', type: 'text', placeholder: 'Ej. Google Chrome v120' },
+                    { id: 'utiliza_proxy', label: '¿Utiliza Proxy?', type: 'select', options: ['No', 'Sí'], placeholder: '' }
+                ],
+                formatter: (data) => {
+                    return `PLANTILLAS DE GESTIÓN\nRequerimiento Mi Asistencia 360 (OTTs / Claro Drive)\nCuenta: ${data.cuenta || ''}\nCédula (si es móvil): ${data.cedula || ''}\nCorreo electrónico: ${data.correo || ''}\n\nDATOS OTTs\nNombre de ott: ${data.nombre_ott || ''}\nOtts: ${data.otts || ''}\n\nDATOS CLARO DRIVE\nNúmero de contacto: ${data.numero_contacto || ''}\nMensaje de error: ${data.mensaje_error || ''}\nTipo de suscripción (Paga o Bundle): ${data.tipo_suscripcion || ''}\nFecha y hora de falla: ${data.fecha_hora_falla || ''}\nDispositivo utilizado (computador o teléfono): ${data.dispositivo || ''}\nMarca o modelo de equipo: ${data.marca_modelo || ''}\nSistema operativo (iOS, Android, etc.): ${data.sistema_operativo || ''}\nVersión del App: ${data.version_app || ''}\nTipo de acceso a la red (Wifi o LAN): ${data.acceso_red || ''}\nNavegador: ${data.navegador || ''}\n¿Utiliza Proxy?: ${data.utiliza_proxy || ''}`;
+                }
+            },
+            {
+                id: 'pagos_no_aplicados',
+                name: 'Pagos no aplicados',
                 category: 'Pagos',
                 icon: 'fa-envelope',
-                notice: 'Enviar a pagos@claro.com.co y adjuntar las evidencias del pago. La respuesta tarda de 24 a 72 horas hábiles y llega al correo; registrar la respuesta como PW en notas F7 o tickler.',
+                notice: 'IMPORTANTE: Enviar correo al asunto indicado especificando el tipo de cuenta (PAGOS NO APLICADOS CUENTA...). Adjuntar evidencias del pago. Responden de 24 a 72 horas hábiles y se registra la respuesta en notas F7 o tickler como PWA.',
                 fields: [
+                    { id: 'cuenta_tipo', label: 'Tipo de cuenta (línea móvil, cuenta hogar o crédito equipo)', type: 'text', placeholder: 'Indique el tipo y número de cuenta' },
                     { id: 'nombre_completo', label: 'Nombre completo', type: 'text', placeholder: 'Ingrese el nombre completo' },
                     { id: 'documento', label: 'Documento', type: 'text', placeholder: 'Ingrese el documento' },
                     { id: 'dia_pago', label: 'Día del pago realizado', type: 'date', placeholder: '' },
                     { id: 'medio_pago', label: 'Medio de pago', type: 'select', options: ['App Mi Claro', 'Banco', 'Pasarela PSE', 'Portal Pagos Claro'], placeholder: '' },
-                    { id: 'valor_pagado', label: 'Valor pagado', type: 'text', placeholder: 'Ej. $50.000' },
-                    { id: 'cuenta_tipo', label: 'Tipo de cuenta (línea móvil, cuenta hogar o crédito equipo)', type: 'text', placeholder: 'Indique el tipo y número de cuenta' }
+                    { id: 'valor_pagado', label: 'Valor pagado', type: 'text', placeholder: 'Ej. $50.000' }
                 ],
                 formatter: (data) => {
                     return `Para: pagos@claro.com.co\nAsunto: PAGOS NO APLICADOS CUENTA (${data.cuenta_tipo || 'LÍNEA MÓVIL, CUENTA HOGAR, CRÉDITO EQUIPO'})\nNombre completo: ${data.nombre_completo || ''}\nDocumento: ${data.documento || ''}\nDía del pago realizado: ${data.dia_pago || ''}\nMedio de pago: ${data.medio_pago || ''}\nValor pagado: ${data.valor_pagado || ''}`;
                 }
             },
             {
-                id: 'mcafee_td',
-                name: 'McAfee: Error T&D',
-                category: 'Aplicaciones',
-                icon: 'fa-shield-halved',
-                notice: 'IMPORTANTE: Solo aplica si T&D presenta un error. Enviar al apoyo en piso por Teams junto con el pantallazo del error y completar estos datos.',
+                id: 'visita_error_td',
+                name: 'Creación de visita error T&D',
+                category: 'Visita técnica',
+                icon: 'fa-credit-card',
+                notice: 'IMPORTANTE: Enviar al apoyo en piso por Teams, junto con el pantallazo del error de T&D y los datos de la plantilla.',
                 fields: [
                     { id: 'cuenta', label: 'Cuenta', type: 'text', placeholder: 'Ingrese la cuenta' },
                     { id: 'nombre_cliente', label: 'Nombre cliente', type: 'text', placeholder: 'Ingrese el nombre completo' },
                     { id: 'cedula', label: 'Cédula', type: 'text', placeholder: 'Ingrese el documento' },
-                    { id: 'id_td', label: 'ID de T&D', type: 'text', placeholder: 'Ingrese el ID de T&D' },
+                    { id: 'id_td', label: 'Id de T&D', type: 'text', placeholder: 'Ingrese el ID de T&D' },
                     { id: 'razon_envio_visita', label: 'Razón de envío de visita', type: 'textarea', placeholder: 'Describa la razón' },
-                    { id: 'tecnologia', label: 'HFC o FTTH', type: 'select', options: ['HFC', 'FTTH'], placeholder: '' },
+                    { id: 'tecnologia', label: 'HFC / FTTH', type: 'select', options: ['HFC', 'FTTH'], placeholder: '' },
                     { id: 'usuario_asesor', label: 'Usuario asesor', type: 'text', placeholder: 'Ingrese el usuario del asesor' },
                     { id: 'aliado', label: 'Aliado', type: 'text', placeholder: 'INDRA' }
                 ],
                 formatter: (data) => {
-                    return `PLANTILLAS DE GESTIÓN\nMcAfee: Error T&D\nCuenta: ${data.cuenta || ''}\nNombre cliente: ${data.nombre_cliente || ''}\nCédula: ${data.cedula || ''}\nID de T&D: ${data.id_td || ''}\nRazón de envío de visita: ${data.razon_envio_visita || ''}\nHFC o FTTH: ${data.tecnologia || ''}\nUsuario asesor: ${data.usuario_asesor || ''}\nAliado: ${data.aliado || 'INDRA'}`;
+                    return `PLANTILLAS DE GESTIÓN\nCreación de visita error T&D\nCuenta: ${data.cuenta || ''}\nNombre cliente: ${data.nombre_cliente || ''}\nCédula: ${data.cedula || ''}\nId de T&D: ${data.id_td || ''}\nRazón de envío de visita: ${data.razon_envio_visita || ''}\nHFC / FTTH: ${data.tecnologia || ''}\nUsuario asesor: ${data.usuario_asesor || ''}\nAliado: ${data.aliado || 'INDRA'}`;
                 }
             },
             {
-                id: 'mcafee_activacion',
-                name: 'McAfee: Activación',
+                id: 'mcafee',
+                name: 'McAfee',
                 category: 'Aplicaciones',
                 icon: 'fa-shield-halved',
-                notice: 'IMPORTANTE: Copiar y completar toda la información. Dejar esta plantilla en la carpeta RR F7 Gestión cliente críticos y escalar al Back Office desde Genesys.',
+                notice: 'IMPORTANTE: Dejar esta plantilla en la carpeta de RR F7 Gestión cliente críticos y escalar al Back Office desde Genesys.',
                 fields: [
                     { id: 'cuenta', label: 'Cuenta', type: 'text', placeholder: 'Ingrese la cuenta' },
                     { id: 'nombre_titular', label: 'Nombre titular', type: 'text', placeholder: 'Ingrese el nombre del titular' },
@@ -420,7 +367,7 @@
                     { id: 'correo', label: 'Correo electrónico', type: 'email', placeholder: 'Ingrese el correo electrónico' }
                 ],
                 formatter: (data) => {
-                    return `PLANTILLAS DE GESTIÓN\nMcAfee: Activación\nCuenta: ${data.cuenta || ''}\nNombre titular: ${data.nombre_titular || ''}\nCédula: ${data.cedula || ''}\nOrden de trabajo donde se activó McAfee: ${data.orden_activacion || ''}\nCódigo de McAfee: ${data.codigo_mcafee || ''}\nCorreo electrónico: ${data.correo || ''}`;
+                    return `PLANTILLAS DE GESTIÓN\nMcAfee\nCuenta: ${data.cuenta || ''}\nNombre titular: ${data.nombre_titular || ''}\nCédula: ${data.cedula || ''}\nOrden de trabajo donde se activó McAfee: ${data.orden_activacion || ''}\nCódigo de McAfee: ${data.codigo_mcafee || ''}\nCorreo electrónico: ${data.correo || ''}`;
                 }
             },
             {
@@ -428,45 +375,65 @@
                 name: 'Escalamiento Cartera',
                 category: 'Cartera',
                 icon: 'fa-file-invoice-dollar',
-                notice: 'IMPORTANTE: Copiar y completar toda la información. Dejar esta plantilla en la carpeta RR F7 Gestión cliente críticos y escalar al Back Office desde Genesys.',
+                notice: 'IMPORTANTE: Primero se debe validar que el cliente no tenga deuda ni en RR ni en AC (apoyarse con certificado de cuenta al día). Si no tiene deuda, preguntar dónde le indican pagar y escalar por Mi Asistencia 360 > Catálogo > Servicios para cliente > Cartera.',
                 fields: [
-                    { id: 'cuenta_min', label: 'Cuenta o MIN', type: 'text', placeholder: 'Ingrese cuenta o MIN' },
-                    { id: 'pqr_cum', label: 'PQR o CUM', type: 'text', placeholder: 'Ingrese PQR o CUM' },
+                    { id: 'nombre_cliente_notificaciones', label: 'Nombre de cliente con notificaciones de cobro', type: 'text', placeholder: 'Ingrese el nombre del cliente' },
+                    { id: 'cedula_cliente', label: 'Cédula', type: 'text', placeholder: 'Ingrese el documento' },
+                    { id: 'numero_contacto_cobros', label: 'Número de contacto donde llegan los cobros', type: 'tel', placeholder: 'Ingrese el número de contacto' },
+                    { id: 'ultimo_mensaje_cobro', label: 'Último mensaje de cobro', type: 'textarea', placeholder: 'Ingrese el último mensaje recibido' },
+                    { id: 'nombre_deudor', label: 'Nombre de quien tiene deuda', type: 'text', placeholder: 'Ingrese el nombre del deudor' },
+                    { id: 'cedula_deudor', label: 'Cédula', type: 'text', placeholder: 'Ingrese el documento del deudor' },
+                    { id: 'cuenta', label: 'Cuenta', type: 'text', placeholder: 'Ingrese la cuenta' },
+                    { id: 'ultimo_pago', label: 'Último pago', type: 'text', placeholder: 'Ingrese la fecha o valor del último pago' }
+                ],
+                formatter: (data) => {
+                    return `PLANTILLAS DE GESTIÓN\nEscalamiento Cartera\nNombre de cliente con notificaciones de cobro: ${data.nombre_cliente_notificaciones || ''}\nCédula: ${data.cedula_cliente || ''}\nNúmero de contacto donde llegan los cobros: ${data.numero_contacto_cobros || ''}\nÚltimo mensaje de cobro: ${data.ultimo_mensaje_cobro || ''}\nNombre de quien tiene deuda: ${data.nombre_deudor || ''}\nCédula: ${data.cedula_deudor || ''}\nCuenta: ${data.cuenta || ''}\nÚltimo pago: ${data.ultimo_pago || ''}`;
+                }
+            },
+            {
+                id: 'materializacion_pqr',
+                name: 'Materialización PQR',
+                category: 'PQR',
+                icon: 'fa-clipboard-check',
+                notice: 'IMPORTANTE: Dejar esta plantilla en la carpeta de RR F7 Gestión cliente críticos y escalar al Back Office desde Genesys.',
+                fields: [
+                    { id: 'cuenta_min', label: 'Cuenta o Min', type: 'text', placeholder: 'Ingrese cuenta o MIN' },
+                    { id: 'pqr_cum', label: 'PQR o Cum', type: 'text', placeholder: 'Ingrese PQR o CUM' },
                     { id: 'fecha_respuesta_sap', label: 'Fecha de respuesta SAP', type: 'date', placeholder: '' },
                     { id: 'asesor_responde', label: 'Asesor que responde', type: 'text', placeholder: 'Ingrese el asesor' },
                     { id: 'carpeta_tickler', label: 'Carpeta F7 o tickler donde está la respuesta', type: 'text', placeholder: 'Ingrese carpeta o tickler' },
                     { id: 'descripcion', label: 'Descripción', type: 'textarea', placeholder: 'Describa el caso' }
                 ],
                 formatter: (data) => {
-                    return `PLANTILLAS DE GESTIÓN\nEscalamiento Cartera\nCuenta o MIN: ${data.cuenta_min || ''}\nPQR o CUM: ${data.pqr_cum || ''}\nFecha de respuesta SAP: ${data.fecha_respuesta_sap || ''}\nAsesor que responde: ${data.asesor_responde || ''}\nCarpeta F7 o tickler donde está la respuesta: ${data.carpeta_tickler || ''}\nDescripción: ${data.descripcion || ''}`;
+                    return `PLANTILLAS DE GESTIÓN\nMaterialización PQR\nCuenta o Min: ${data.cuenta_min || ''}\nPQR o Cum: ${data.pqr_cum || ''}\nFecha de respuesta SAP: ${data.fecha_respuesta_sap || ''}\nAsesor que responde: ${data.asesor_responde || ''}\nCarpeta F7 o tickler donde está la respuesta: ${data.carpeta_tickler || ''}\nDescripción: ${data.descripcion || ''}`;
                 }
             },
             {
-                id: 'notificaciones_cobro',
-                name: 'Cartera: Notificaciones de cobro',
-                category: 'Cartera',
-                icon: 'fa-bell',
-                notice: 'IMPORTANTE: Primero validar que el cliente no tenga deuda en RR ni en AC (apoyarse con el certificado de cuenta al día). Si no tiene deuda, preguntar dónde le indican pagar y escalar por Mi Asistencia 360 > Catálogo > Servicios para cliente > Cartera.',
-                fields: [
-                    { id: 'nombre_cliente_notificaciones', label: 'Nombre de cliente con notificaciones de cobro', type: 'text', placeholder: 'Ingrese el nombre del cliente' },
-                    { id: 'cedula_cliente', label: 'Cédula del cliente', type: 'text', placeholder: 'Ingrese el documento' },
-                    { id: 'numero_contacto_cobros', label: 'Número de contacto donde llegan los cobros', type: 'tel', placeholder: 'Ingrese el número de contacto' },
-                    { id: 'ultimo_mensaje_cobro', label: 'Último mensaje de cobro', type: 'textarea', placeholder: 'Ingrese el último mensaje recibido' },
-                    { id: 'nombre_deudor', label: 'Nombre de quien tiene deuda', type: 'text', placeholder: 'Ingrese el nombre del deudor' },
-                    { id: 'cedula_deudor', label: 'Cédula del deudor', type: 'text', placeholder: 'Ingrese el documento del deudor' },
-                    { id: 'cuenta', label: 'Cuenta', type: 'text', placeholder: 'Ingrese la cuenta' },
-                    { id: 'ultimo_pago', label: 'Último pago', type: 'text', placeholder: 'Ingrese la fecha o valor del último pago' }
-                ],
-                formatter: (data) => {
-                    return `PLANTILLAS DE GESTIÓN\nCartera: Notificaciones de cobro\nNombre de cliente con notificaciones de cobro: ${data.nombre_cliente_notificaciones || ''}\nCédula: ${data.cedula_cliente || ''}\nNúmero de contacto donde llegan los cobros: ${data.numero_contacto_cobros || ''}\nÚltimo mensaje de cobro: ${data.ultimo_mensaje_cobro || ''}\nNombre de quien tiene deuda: ${data.nombre_deudor || ''}\nCédula: ${data.cedula_deudor || ''}\nCuenta: ${data.cuenta || ''}\nÚltimo pago: ${data.ultimo_pago || ''}`;
-                }
-            },
-            {
-                id: 'modificacion_envio_no_entrega',
-                name: 'Modificación envío: Equipo no entregado',
+                id: 'modificacion_envio_equipo',
+                name: 'Modificación envío equipo',
                 category: 'Logística equipos',
                 icon: 'fa-truck',
-                notice: 'IMPORTANTE: Para créditos con solicitud de eliminación del plan de pagos por no entrega. Escalar por Mi Asistencia 360 > Catálogo > Servicios para el cliente claro > Asesorías y Solicitudes > Soluciones Transversales > Logística Equipos.',
+                notice: 'IMPORTANTE: Cuando el cliente informa que la dirección de envío del equipo es incorrecta. Se escala a través de Mi Asistencia 360 > Catálogo > Servicios para el cliente Claro > Asesorías y Solicitudes - Soluciones Transversales - Logística Equipos.',
+                fields: [
+                    { id: 'nombre_cliente', label: 'Nombre de cliente', type: 'text', placeholder: 'Ingrese el nombre del cliente' },
+                    { id: 'cedula', label: 'Cédula', type: 'text', placeholder: 'Ingrese el documento' },
+                    { id: 'credito', label: 'Crédito', type: 'text', placeholder: 'Ingrese el crédito' },
+                    { id: 'equipo', label: 'Equipo', type: 'text', placeholder: 'Ingrese el equipo' },
+                    { id: 'solicitud', label: 'Solicitud', type: 'textarea', placeholder: 'Describa la solicitud' },
+                    { id: 'direccion', label: 'Dirección', type: 'text', placeholder: 'Ingrese la dirección correcta' },
+                    { id: 'estado_logytech', label: 'Estado en Logytech', type: 'text', placeholder: 'Ingrese el estado' },
+                    { id: 'numero_contacto', label: 'Número de contacto', type: 'tel', placeholder: 'Ingrese el número de contacto' }
+                ],
+                formatter: (data) => {
+                    return `PLANTILLAS DE GESTIÓN\nModificación envío equipo\nNombre de cliente: ${data.nombre_cliente || ''}\nCédula: ${data.cedula || ''}\nCrédito: ${data.credito || ''}\nEquipo: ${data.equipo || ''}\nSolicitud: ${data.solicitud || ''}\nDirección: ${data.direccion || ''}\nEstado en Logytech: ${data.estado_logytech || ''}\nNúmero de contacto: ${data.numero_contacto || ''}`;
+                }
+            },
+            {
+                id: 'eliminacion_plan_pagos_ascard',
+                name: 'Eliminación plan de pagos Ascard',
+                category: 'Logística equipos',
+                icon: 'fa-truck',
+                notice: 'IMPORTANTE: Cuando el cliente posee un crédito pero se requiere eliminar el plan de pagos por motivo de no entrega del equipo. Se escala a través de Mi Asistencia 360 > Catálogo > Servicios para el cliente Claro > Asesorías y Solicitudes - Soluciones Transversales - Logística Equipos.',
                 fields: [
                     { id: 'nombre_cliente', label: 'Nombre de cliente', type: 'text', placeholder: 'Ingrese el nombre del cliente' },
                     { id: 'cedula', label: 'Cédula', type: 'text', placeholder: 'Ingrese el documento' },
@@ -477,27 +444,7 @@
                     { id: 'fecha_recibido_bodega', label: 'Fecha de recibido en bodega', type: 'date', placeholder: '' }
                 ],
                 formatter: (data) => {
-                    return `PLANTILLAS DE GESTIÓN\nModificación envío de equipo: No entregado\nNombre de cliente: ${data.nombre_cliente || ''}\nCédula: ${data.cedula || ''}\nCrédito: ${data.credito || ''}\nEquipo: ${data.equipo || ''}\nSolicitud: ${data.solicitud || ''}\nEstado en Logytech: ${data.estado_logytech || ''}\nFecha de recibido en bodega: ${data.fecha_recibido_bodega || ''}`;
-                }
-            },
-            {
-                id: 'modificacion_envio_direccion',
-                name: 'Modificación envío: Dirección incorrecta',
-                category: 'Logística equipos',
-                icon: 'fa-truck',
-                notice: 'IMPORTANTE: Para clientes que informan que la dirección de envío del equipo es incorrecta. Escalar por Mi Asistencia 360 > Catálogo > Servicios para el cliente claro > Asesorías y Solicitudes > Soluciones Transversales > Logística Equipo.',
-                fields: [
-                    { id: 'nombre_cliente', label: 'Nombre de cliente', type: 'text', placeholder: 'Ingrese el nombre del cliente' },
-                    { id: 'cedula', label: 'Cédula', type: 'text', placeholder: 'Ingrese el documento' },
-                    { id: 'credito', label: 'Crédito', type: 'text', placeholder: 'Ingrese el crédito' },
-                    { id: 'equipo', label: 'Equipo', type: 'text', placeholder: 'Ingrese el equipo' },
-                    { id: 'solicitud', label: 'Solicitud', type: 'textarea', placeholder: 'Describa la solicitud' },
-                    { id: 'direccion', label: 'Dirección correcta de envío', type: 'text', placeholder: 'Ingrese la dirección correcta' },
-                    { id: 'estado_logytech', label: 'Estado en Logytech', type: 'text', placeholder: 'Ingrese el estado' },
-                    { id: 'numero_contacto', label: 'Número de contacto', type: 'tel', placeholder: 'Ingrese el número de contacto' }
-                ],
-                formatter: (data) => {
-                    return `PLANTILLAS DE GESTIÓN\nModificación envío de equipo: Dirección incorrecta\nNombre de cliente: ${data.nombre_cliente || ''}\nCédula: ${data.cedula || ''}\nCrédito: ${data.credito || ''}\nEquipo: ${data.equipo || ''}\nSolicitud: ${data.solicitud || ''}\nDirección: ${data.direccion || ''}\nEstado en Logytech: ${data.estado_logytech || ''}\nNúmero de contacto: ${data.numero_contacto || ''}`;
+                    return `PLANTILLAS DE GESTIÓN\nEliminación plan de pagos Ascard\nNombre de cliente: ${data.nombre_cliente || ''}\nCédula: ${data.cedula || ''}\nCrédito: ${data.credito || ''}\nEquipo: ${data.equipo || ''}\nSolicitud: ${data.solicitud || ''}\nEstado en Logytech: ${data.estado_logytech || ''}\nFecha de recibido en bodega: ${data.fecha_recibido_bodega || ''}`;
                 }
             }
         ];
@@ -674,7 +621,7 @@
             } catch (err) {
                 console.error('Error copying text: ', err);
                 // Fallback attempt
-                alert('No se pudo copiar automáticamente. Por favor seleccione el texto de la vista previa y cópiel manualmente.');
+                alert('No se pudo copiar automáticamente. Por favor seleccione el texto de la vista previa y copielo manualmente.');
             }
         }
 
